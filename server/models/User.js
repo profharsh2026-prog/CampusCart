@@ -64,6 +64,12 @@ const UserSchema = new mongoose.Schema({
         ref: 'Product'
     }],
 
+    prn: {
+        type: Number,
+        unique: true,
+        sparse: true
+    },
+
     createdAt: {
         type: Date,
         default: Date.now

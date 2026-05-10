@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const cloudinary = require('../config/cloudinary');
 const axios = require('axios');
+const { generateEmbedding } = require('../utils/embedding');
 
 // ─────────────────────────────────────────────
 // Cloudinary upload helper
@@ -16,6 +17,7 @@ const uploadToCloudinary = (buffer, mimetype) =>
         resolve(result.secure_url);
       }
     );
+
 
     stream.end(buffer);
   });
@@ -111,7 +113,8 @@ exports.createProduct = async (req, res) => {
       category,
       pickupLocation,
       images: imageUrls,
-      sellerId: req.user.id
+      sellerId: req.user.id,
+      embeddings: await generateEmbedding(`${title} ${description}`)
     });
 
     const saved = await product.save();
@@ -143,6 +146,10 @@ exports.updateProduct = async (req, res) => {
       category: req.body.category ?? product.category,
       pickupLocation: req.body.pickupLocation ?? product.pickupLocation,
     };
+
+    if (req.body.title || req.body.description) {
+      update.embeddings = await generateEmbedding(`${update.title} ${update.description}`);
+    }
 
     if (req.files?.length > 0) {
       await deleteFromCloudinary(product.images);

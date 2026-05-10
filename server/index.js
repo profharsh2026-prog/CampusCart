@@ -76,17 +76,17 @@ app.use("/api/reports", require("./routes/reportRoutes"));
 // Public General Routes
 // ==========================
 app.get("/api/public/stats", async (req, res) => {
-    try {
-        const [totalUsers, totalProducts, totalOrders] = await Promise.all([
-            require("./models/User").countDocuments({ isAdmin: false }),
-            require("./models/Product").countDocuments({}),
-            require("./models/Order").countDocuments({})
-        ]);
-        res.json({ totalUsers, totalProducts, totalOrders });
-    } catch (err) {
-        console.error("Public stats error:", err.message);
-        res.status(500).json({ msg: "Server Error" });
-    }
+  try {
+    const [totalUsers, totalProducts, totalOrders] = await Promise.all([
+      require("./models/User").countDocuments({ isAdmin: false }),
+      require("./models/Product").countDocuments({}),
+      require("./models/Order").countDocuments({})
+    ]);
+    res.json({ totalUsers, totalProducts, totalOrders });
+  } catch (err) {
+    console.error("Public stats error:", err.message);
+    res.status(500).json({ msg: "Server Error" });
+  }
 });
 
 
